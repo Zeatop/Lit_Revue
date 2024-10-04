@@ -1,0 +1,91 @@
+{% extends 'website/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    {% if view.action == 'delete' %}
+        <h2>Confirmer la suppression de la critique</h2>
+        <p>Êtes-vous sûr de vouloir supprimer la critique "{{ review.headline }}" ?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
+            <a href="{% url 'website:review_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    {% elif view.action == 'detail' %}
+        <h2>{{ review.headline }}</h2>
+        <p><strong>Note:</strong> {{ review.rating }}/5</p>
+        <p><strong>Critique:</strong> {{ review.body }}</p>
+        <p><strong>Écrit par:</strong> {{ review.user }}</p>
+        <p><strong>Date de création:</strong> {{ review.time_created }}</p>
+        {% if review.ticket %}
+            <p><strong>Ticket associé:</strong> <a href="{% url 'website:ticket_detail' review.ticket.pk %}">{{ review.ticket.book }}</a></p>
+        {% endif %}
+        <a href="{% url 'website:edit_review' review.pk %}" class="btn btn-primary">Modifier</a>
+        <a href="{% url 'website:delete_review' review.pk %}" class="btn btn-danger">Supprimer</a>
+    {% else %}
+        <h2>
+            {% if view.action == 'create' %}
+                {% if ticket %}
+                    Créer une critique pour:
+                    <h3>{{ ticket.book }}</h3>
+                {% else %}
+                    Créer un ticket et une critique
+                {% endif %}            
+            {% elif view.action == 'edit' %}
+                Modifier la critique
+            {% endif %}
+        </h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% if not ticket %}
+                <h3>Informations sur le livre</h3>
+                <div class="form-group">
+                    {{ form.ticket_book.label_tag }}
+                    {{ form.ticket_book }}
+                    {% if form.ticket_book.errors %}
+                        <div class="text-danger">
+                            {{ form.ticket_book.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.ticket_description.label_tag }}
+                    {{ form.ticket_description }}
+                    {% if form.ticket_description.errors %}
+                        <div class="text-danger">
+                            {{ form.ticket_description.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form.ticket_image.label_tag }}
+                    {{ form.ticket_image }}
+                    {% if form.ticket_image.errors %}
+                        <div class="text-danger">
+                            {{ form.ticket_image.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% else %}
+                {{ form.ticket.as_hidden }}
+            {% endif %}
+            <h3>Votre critique</h3>
+            {% for field in form %}
+                {% if field.name not in 'ticket,ticket_book,ticket_description,ticket_image' %}
+                    <div class="form-group">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="text-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">
+                {% if view.action == 'create' %}Créer{% else %}Modifier{% endif %}
+            </button>
+            <a href="{% url 'website:review_list' %}" class="btn btn-secondary">Annuler</a>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

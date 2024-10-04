@@ -1,0 +1,51 @@
+{% extends 'website/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Liste des Critiques</h2>
+    <a href="{% url 'website:create_review' %}" class="btn btn-primary mb-3">Créer une nouvelle critique</a>
+    
+    {% if reviews %}
+        <div class="list-group">
+        {% for review in reviews %}
+        <div class="list-group-item list-group-item-action flex-column align-items-start">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ review.headline }}</h5>
+                <small>{{ review.time_created|date:"d/m/Y H:i" }}</small>
+            </div>
+            <p class="mb-1">{{ review.body|truncatewords:30 }}</p>
+            <small>Note : {{ review.rating }}/5 | Auteur : {{ review.user.username }}</small>
+            {% if review.ticket %}
+                <div class="container mt-5"> 
+                    <small class="d-block">{{ review.ticket.user }}</small>
+                    <small class="d-block">Ticket associé : {{ review.ticket.book }}</small>
+                    <small class="d-block">
+                        {% if review.ticket.image %}
+                            <img src="{{ review.ticket.image.url }}" alt="Image du ticket" class="img-fluid">
+                            {% else %}
+                                Pas d'image disponible
+                            {% endif %}
+                    </small>
+                </div>
+            {% endif %}
+            <div class="mt-2">
+                <a href="{% url 'website:review_detail' review.pk %}" class="btn btn-sm btn-info">Détails</a>
+                {% if user == review.user %}
+                    <a href="{% url 'website:edit_review' review.pk %}" class="btn btn-sm btn-warning">Modifier</a>
+                    <a href="{% url 'website:delete_review' review.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Aucune critique pour le moment!</h4>
+            <p>Il semble qu'aucune critique n'ait encore été publiée. Pourquoi ne pas être le premier à partager votre opinion?</p>
+            <hr>
+            <p class="mb-0">
+                <a href="{% url 'website:create_review' %}" class="btn btn-info">Écrire votre première critique</a>
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'website/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Profil de {{ profile_user.username }}</h1>
+   
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            {% if user != profile_user %}
+                {% if is_following %}
+                    <form method="post" action="{% url 'website:unsubscribe' profile_user.username %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-lg m-2">
+                            Se désabonner
+                        </button>
+                    </form>
+                {% else %}
+                    <form method="post" action="{% url 'website:subscribe' profile_user.username %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-lg m-2">
+                            S'abonner
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="col-md-6 text-center">
+            <h2>Activités de {{ profile_user.username }}</h2>
+            {% for item in contributions %}
+                {% include 'website/_feedItem.html' with item=item %}
+            {% empty %}
+                <p>Aucune activité pour cet utilisateur.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
