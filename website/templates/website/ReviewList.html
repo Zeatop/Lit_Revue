@@ -1,6 +1,6 @@
 {% extends 'website/base.html' %}
 {% block content %}
-<div class="container mt-5">
+<div class="main_content container mt-5">
     <h2 class="mb-4">Liste des Critiques</h2>
     <a href="{% url 'website:create_review' %}" class="btn btn-primary mb-3">Créer une nouvelle critique</a>
     
@@ -20,7 +20,7 @@
                     <small class="d-block">Ticket associé : {{ review.ticket.book }}</small>
                     <small class="d-block">
                         {% if review.ticket.image %}
-                            <img src="{{ review.ticket.image.url }}" alt="Image du ticket" class="img-fluid">
+                            <img class="ticket_img" src="{{ review.ticket.image.url }}" alt="Image du ticket" class="img-fluid">
                             {% else %}
                                 Pas d'image disponible
                             {% endif %}

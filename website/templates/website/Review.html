@@ -1,27 +1,8 @@
 {% extends 'website/base.html' %}
 {% block content %}
-<div class="container mt-5">
-    {% if view.action == 'delete' %}
-        <h2>Confirmer la suppression de la critique</h2>
-        <p>Êtes-vous sûr de vouloir supprimer la critique "{{ review.headline }}" ?</p>
-        <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
-            <a href="{% url 'website:review_list' %}" class="btn btn-secondary">Annuler</a>
-        </form>
-    {% elif view.action == 'detail' %}
-        <h2>{{ review.headline }}</h2>
-        <p><strong>Note:</strong> {{ review.rating }}/5</p>
-        <p><strong>Critique:</strong> {{ review.body }}</p>
-        <p><strong>Écrit par:</strong> {{ review.user }}</p>
-        <p><strong>Date de création:</strong> {{ review.time_created }}</p>
-        {% if review.ticket %}
-            <p><strong>Ticket associé:</strong> <a href="{% url 'website:ticket_detail' review.ticket.pk %}">{{ review.ticket.book }}</a></p>
-        {% endif %}
-        <a href="{% url 'website:edit_review' review.pk %}" class="btn btn-primary">Modifier</a>
-        <a href="{% url 'website:delete_review' review.pk %}" class="btn btn-danger">Supprimer</a>
-    {% else %}
-        <h2>
+<div class="main_content container mt-5">
+    {% if view.action == 'create' or view.action == 'edit' %}
+        <h2 class="mb-4">
             {% if view.action == 'create' %}
                 {% if ticket %}
                     Créer une critique pour:
@@ -36,56 +17,100 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             {% if not ticket %}
-                <h3>Informations sur le livre</h3>
-                <div class="form-group">
-                    {{ form.ticket_book.label_tag }}
-                    {{ form.ticket_book }}
-                    {% if form.ticket_book.errors %}
-                        <div class="text-danger">
-                            {{ form.ticket_book.errors }}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h3 class="mb-0">Informations sur le livre</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            {{ form.ticket_book.label_tag }}
+                            {{ form.ticket_book }}
+                            {% if form.ticket_book.errors %}
+                                <div class="text-danger">
+                                    {{ form.ticket_book.errors }}
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.ticket_description.label_tag }}
-                    {{ form.ticket_description }}
-                    {% if form.ticket_description.errors %}
-                        <div class="text-danger">
-                            {{ form.ticket_description.errors }}
+                        <div class="form-group mb-3">
+                            {{ form.ticket_description.label_tag }}
+                            {{ form.ticket_description }}
+                            {% if form.ticket_description.errors %}
+                                <div class="text-danger">
+                                    {{ form.ticket_description.errors }}
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.ticket_image.label_tag }}
-                    {{ form.ticket_image }}
-                    {% if form.ticket_image.errors %}
-                        <div class="text-danger">
-                            {{ form.ticket_image.errors }}
+                        <div class="form-group mb-3">
+                            {{ form.ticket_image.label_tag }}
+                            {{ form.ticket_image }}
+                            {% if form.ticket_image.errors %}
+                                <div class="text-danger">
+                                    {{ form.ticket_image.errors }}
+                                </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
+                    </div>
                 </div>
             {% else %}
                 {{ form.ticket.as_hidden }}
             {% endif %}
-            <h3>Votre critique</h3>
-            {% for field in form %}
-                {% if field.name not in 'ticket,ticket_book,ticket_description,ticket_image' %}
-                    <div class="form-group">
-                        {{ field.label_tag }}
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="text-danger">
-                                {{ field.errors }}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Votre critique</h3>
+                </div>
+                <div class="card-body">
+                    {% for field in form %}
+                        {% if field.name not in 'ticket,ticket_book,ticket_description,ticket_image' %}
+                            <div class="form-group mb-3">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-danger">
+                                        {{ field.errors }}
+                                    </div>
+                                {% endif %}
                             </div>
                         {% endif %}
-                    </div>
-                {% endif %}
-            {% endfor %}
-            <button type="submit" class="btn btn-primary">
-                {% if view.action == 'create' %}Créer{% else %}Modifier{% endif %}
-            </button>
-            <a href="{% url 'website:review_list' %}" class="btn btn-secondary">Annuler</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                    {% if view.action == 'create' %}Créer{% else %}Modifier{% endif %}
+                </button>
+                <a href="{% url 'website:review_list' %}" class="btn btn-secondary">Annuler</a>
+            </div>
         </form>
+    {% elif view.action == 'detail' %}
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">Détails de la critique</h2>
+            </div>
+            <div class="card-body">
+                <h3>{{ review.ticket.book }}</h3>
+                <p><strong>Critique par :</strong> {{ review.user }}</p>
+                <p><strong>Date de création :</strong> {{ review.time_created }}</p>
+                <p><strong>Note :</strong> {{ review.rating }} / 5</p>
+                <p><strong>Commentaire :</strong></p>
+                <p>{{ review.body }}</p>
+
+                {% if review.ticket %}
+                    <h4 class="mt-4">Ticket associé</h4>
+                    <p><strong>Créé par :</strong> {{ review.ticket.user }}</p>
+                    <p><strong>Description :</strong> {{ review.ticket.description }}</p>
+                    {% if review.ticket.image %}
+                        <img src="{{ review.ticket.image.url }}" alt="{{ review.ticket.book }}" class="img-fluid mt-3 mb-3">
+                    {% endif %}
+                {% endif %}
+
+                <div class="mt-4">
+                    {% if user.is_authenticated and user == review.user %}
+                        <a href="{% url 'website:edit_review' review.pk %}" class="btn btn-primary">Modifier</a>
+                        <a href="{% url 'website:delete_review' review.pk %}" class="btn btn-danger">Supprimer</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     {% endif %}
 </div>
 {% endblock %}

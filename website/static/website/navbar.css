@@ -1,0 +1,51 @@
+footer {
+    margin-top: 5rem
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    box-shadow: -2px 5px 20px -15px rgba(0,0,0,0.74);
+    min-width: 100%;
+    position: fixed !important;
+    padding-bottom: 2rem !important;
+    height: 10%;
+    padding-top: 2rem !important;
+    margin-top: -3rem;
+    z-index: 2;
+    background-color: white;
+}
+
+.logo {
+    max-width: 35%;
+}
+
+.logout{
+    padding-left: 1rem;
+}
+
+.nav a {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-decoration: none;
+}
+
+.nav {
+    padding-right: 2rem
+}
+
+.main_content{
+    padding-top: 10%;
+    position: relative;
+    z-index: 1;
+    top: 0;
+}
+
+#id_rating{
+    display: flex
+}
+
+#id_rating div{
+    padding-right: 0.5rem;
+}

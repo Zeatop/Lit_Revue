@@ -35,7 +35,9 @@ class UserProfileView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['profile_user'] = get_object_or_404(User, username=self.kwargs['username'])
+        profile_user = get_object_or_404(User, username=self.kwargs['username'])
+        context['profile_user'] = profile_user
+        context['is_following'] = self.request.user.is_authenticated and self.request.user.followed_users.filter(pk=profile_user.pk).exists()
         return context
 
 class SubscribeView(LoginRequiredMixin, View):
@@ -97,6 +99,7 @@ class HomeView(TemplateView):
         )
         
         context['combined_feed'] = combined_list[:10]
+        context['user'] = self.request.user
         return context
 
 class ActionContextMixin:
@@ -146,6 +149,7 @@ class TicketDeleteView(LoginRequiredMixin, UserPassesTestMixin, ActionContextMix
 
 class TicketDetailView(LoginRequiredMixin, DetailView):
     model = Ticket
+    action='detail'
     template_name = 'website/Ticket.html'
 
 class TicketListView(LoginRequiredMixin, ListView):
@@ -246,19 +250,12 @@ class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, ActionContextMix
         review = self.get_object()
         return self.request.user == review.user
 
-    def get_form_kwargs(self):
-        """
-        Ajoute le ticket associé aux kwargs du formulaire.
-        """
-        kwargs = super().get_form_kwargs()
-        kwargs['ticket'] = self.object.ticket
-        return kwargs
 
     def get_success_url(self):
         """
         Définit l'URL de redirection après la mise à jour réussie d'une critique.
         """
-        return reverse_lazy('review_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('website:review_detail', kwargs={'pk': self.object.pk})
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, ActionContextMixin, DeleteView):
     """
@@ -283,6 +280,7 @@ class ReviewDetailView(LoginRequiredMixin, DetailView):
     LoginRequiredMixin assure que seuls les utilisateurs connectés peuvent voir les détails.
     """
     model = Review
+    action='detail'
     template_name = 'website/Review.html'
 
 class ReviewListView(LoginRequiredMixin, ListView):

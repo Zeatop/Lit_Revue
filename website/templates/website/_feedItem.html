@@ -5,11 +5,15 @@
             <h5 class="card-title">{{ item.book }}</h5>
             <p class="card-text">{{ item.description|truncatewords:30 }}</p>
             {% if item.image %}
-                <img src="{{ item.image.url }}" alt="Image du ticket" class="img-fluid mb-2">
+                <img src="{{ item.image.url }}" alt="Image du ticket" class="ticket_img">
             {% endif %}
             <p class="card-text"><small class="text-muted">Créé par <a href="localhost:8000/user/{{ item.user }}">{{ item.user }}</a> le {{ item.time_created|date:"d/m/Y H:i" }}</small></p>
             {% if item.book and not item.review_set.exists %}
-                        <a href="{% url 'website:create_review' %}?ticket={{ item.id }}" class="btn btn-primary btn-sm">Répondre</a>
+                <a href="{% url 'website:create_review' %}?ticket={{ item.id }}" class="btn btn-primary btn-sm">Répondre</a>
+            {% endif %}
+            {% if user.is_authenticated and user == item.user %}
+                <a href="{% url 'website:edit_ticket' item.pk %}" class="btn btn-sm btn-warning">Modifier</a>
+                <a href="{% url 'website:delete_ticket' item.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
             {% endif %}
         </div>
     {% elif item.headline %}  <!-- Ceci indique que c'est une Review -->
@@ -24,9 +28,13 @@
                 <h5 class="card-title">{{ item.ticket.book }}</h5>
                 <p class="card-text">{{ item.ticket.description|truncatewords:30 }}</p>
                 {% if item.ticket.image %}
-                    <img src="{{ item.ticket.image.url }}" alt="Image du ticket" class="img-fluid mb-2">
+                    <img class="ticket_img" src="{{ item.ticket.image.url }}" alt="Image du ticket" class="img-fluid mb-2">
                 {% endif %}
                 <p class="card-text"><small class="text-muted">Créé par {{ item.ticket.user }} le {{ item.time_created|date:"d/m/Y H:i" }}</small></p>
+                {% if user.is_authenticated and user == item.user %}
+                    <a href="{% url 'website:edit_review' item.pk %}" class="btn btn-sm btn-warning">Modifier</a>
+                    <a href="{% url 'website:delete_review' item.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
+                {% endif %}
             </div>
         </div>
     {% endif %}

@@ -17,7 +17,7 @@ class RegisterView(FormView):
     template_name = 'users/register.html'
     form_class = RegisterForm
     redirect_authenticated_user = True
-    success_url = reverse_lazy('tasks')
+    success_url = reverse_lazy('website:home')
    
     def form_valid(self, form):
         user = form.save()

@@ -1,34 +1,33 @@
 {% extends 'website/base.html' %}
 {% load static %}
-
 {% block content %}
 {% if user.is_authenticated %}
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Bienvenue sur LITRevu</h1>
-        
+    <div class="main_content container mt-5">
         <div class="row justify-content-center">
-            <div class="col-md-6 text-center">
-                <a href="{% url 'website:create_ticket' %}" class="btn btn-primary btn-lg m-2">
-                    Créer un Ticket
-                </a>
-                <a href="{% url 'website:create_review' %}" class="btn btn-success btn-lg m-2">
-                    Créer une Revue
-                </a>
-            </div>
-            <div class="col-md-6 text-center">
-                <h2>Activités récentes</h2>
-                {% for item in combined_feed %}
-                    {% include 'website/_feedItem.html' with item=item %}
-                {% empty %}
-                    <p>Aucune activité récente.</p>
-                {% endfor %}
+            <div class="col-lg-8">
+                <div class="text-center mb-4">
+                    <a href="{% url 'website:create_ticket' %}" class="btn btn-primary btn-lg m-2">
+                        Créer un Ticket
+                    </a>
+                    <a href="{% url 'website:create_review' %}" class="btn btn-success btn-lg m-2">
+                        Créer une Revue
+                    </a>
+                </div>
+                <div class="text-center">
+                    <h2>Activités récentes</h2>
+                    {% for item in combined_feed %}
+                        {% include 'website/_feedItem.html' with item=item %}
+                    {% empty %}
+                        <p>Aucune activité récente.</p>
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
 {% else %}
     <div id="home">
         <div class="center">
-            <form method="post" action="{% url 'register' %}" novalidate class="card">
+            <form method="post" action="{% url 'users:register' %}" novalidate class="card">
                 {% csrf_token %}
                 <h2 class="text-center">Inscrivez-vous maintenant</h2>
                 {% for field in register_form %}
@@ -42,7 +41,7 @@
             </form>
         </div>
         <div class="login">
-            <form method="post" action="{% url 'login' %}" class="card" novalidate>
+            <form method="post" action="{% url 'users:login' %}" class="card" novalidate>
                 {% csrf_token %}
                 <h2 class="text-center">Connectez-vous</h2>
                 {% for field in login_form %}
@@ -55,7 +54,7 @@
                 <input type="submit" value="Login" class="btn btn-primary full-width">
                 <hr>
                 <p class="text-center">Forgot your password <a href="#">Reset Password</a></p>
-                <p class="text-center">Don't have a account? <a href="{% url 'register' %}">Join Now</a></p>
+                <p class="text-center">Don't have a account? <a href="{% url 'users:register' %}">Join Now</a></p>
             </form>
         </div>
     </div>
