@@ -1,5 +1,8 @@
 {% extends 'website/base.html' %}
 {% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'website/fixes.css' %}" />
+{% endblock extra_css%}
 {% block content %}
 {% if user.is_authenticated %}
     <div class="main_content container mt-5">

@@ -3,19 +3,19 @@ footer {
 }
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-content: center;
+    position: fixed;
+    top: 0; /* Ajoutez ceci */
+    left: 0 !important; /* Ajoutez ceci */
+    width: 100% !important; /* Remplacez 100vw */
+    padding: 1rem 0;
+    margin: 0 !important; /* Remplacez margin-top négatif */
+    height: auto; /* Remplacez height fixe */
+    z-index: 1000;
+    background: white;
     box-shadow: -2px 5px 20px -15px rgba(0,0,0,0.74);
-    min-width: 100%;
-    position: fixed !important;
-    padding-bottom: 2rem !important;
-    height: 10%;
-    padding-top: 2rem !important;
-    margin-top: -3rem;
-    z-index: 2;
-    background-color: white;
+    
 }
+
 
 .logo {
     max-width: 35%;
