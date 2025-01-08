@@ -22,7 +22,7 @@
 	    	              	<a href="{% url 'website:ticket_list' %}"><i class=bi bi-list-task></i> Tickets </a>
 	    	              	<a href="{% url 'website:review_list' %}"><i class=bi bi-plus-circle></i> Revues </a>
                               <a href="{% url 'website:followed_users' %}"><i class="bi bi-plus-circle"></i> Abonnements </a>
-		                	<a href="#"> {{request.user | title}}</a>
+		                	<a href="http://127.0.0.1:8000/user/{{request.user}}"> {{request.user | title}}</a>
 	    	                <form class="logout" method="post" action="{% url 'users:logout' %}" class="logout-form">
                                 {% csrf_token %}
                                 <button type="submit" class="btn btn-danger btn-sm">
